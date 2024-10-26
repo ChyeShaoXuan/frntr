@@ -48,3 +48,12 @@ export default tseslint.config({
   },
 })
 ```
+
+Run these commands:
+
+cd frntr
+npm install
+npm install react-router-dom lucide-react @radix-ui/react-select @radix-ui/react-label @radix-ui/react-slot
+npm install -D tailwindcss postcss autoprefixer
+npm run dev
+go to localhost:5173 (might need to change configuration of ec2)
