@@ -9,6 +9,7 @@ type Product = {
   price: number;
   description: string;
   quantity:number;
+  image: string;
 };
 
 type ProductDetailsProps = {

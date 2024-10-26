@@ -24,10 +24,10 @@ type CartItem = Product & { quantity: number };
 
 // Mock data
 const initialProducts: Product[] = [
-  { id: 1, name: "Monstera Deliciosa", category: "plants", price: 30, description: "Beautiful tropical plant", quantity: 10, image: 'https://images.unsplash.com/photo-1598286881453-3a5d3b6e8f5f' },
-  { id: 2, name: "Leather Sofa", category: "furniture", price: 999, description: "Comfortable 3-seater sofa", quantity: 10 , image: 'https://images.unsplash.com/photo-1560479923-2d0b3c7e3e06'},
-  { id: 3, name: "Snake Plant", category: "plants", price: 25, description: "Low-maintenance indoor plant", quantity: 10 , image: 'https://images.unsplash.com/photo-1598286881453-3a5d3b6e8f5f'},
-  { id: 4, name: "Wooden Dining Table", category: "furniture", price: 450, description: "Solid oak dining table", quantity: 10 , image: 'https://images.unsplash.com/photo-1560479923-2d0b3c7e3e06'},
+  { id: 1, name: "Monstera Deliciosa", category: "plants", price: 30, description: "Beautiful tropical plant", quantity: 10, image: 'https://images.unsplash.com/photo-1545241047-6083a3684587?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fHBsYW50fGVufDB8fDB8fHwy' },
+  { id: 2, name: "Leather Sofa", category: "furniture", price: 999, description: "Comfortable 3-seater sofa", quantity: 10 , image: 'https://images.unsplash.com/photo-1512212621149-107ffe572d2f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8c29mYXxlbnwwfHwwfHx8Mg%3D%3D'},
+  { id: 3, name: "Snake Plant", category: "plants", price: 25, description: "Low-maintenance indoor plant", quantity: 10 , image: 'https://images.unsplash.com/photo-1483794344563-d27a8d18014e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGxhbnR8ZW58MHx8MHx8fDI%3D'},
+  { id: 4, name: "Wooden Dining Table", category: "furniture", price: 450, description: "Solid oak dining table", quantity: 10 , image: 'https://images.unsplash.com/photo-1505409628601-edc9af17fda6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZGluaW5nJTIwdGFibGV8ZW58MHx8MHx8fDI%3D'},
 ];
 
 // Navbar component
@@ -88,6 +88,7 @@ function Shop({ products, addToCart, category, setCategory }: {
           <div key={product.id} className="border-2 p-4 rounded border-amber-300 cursor-pointer" onClick={() => handleProductClick(product.id)}>
             <h3 className="text-xl font-semibold">{product.name}</h3>
             <p>{product.description}</p>
+            <img src={product.image} alt={product.name} className="w-full h-48 object-cover mb-4 rounded" />
             <p className="font-bold mt-2">Price: ${product.price}</p>
             <p className="font-bold mt-2">Quantity: {product.quantity}</p>
             <Button onClick={(e) => { e.stopPropagation(); addToCart(product); }} className="mt-2">Add to Cart</Button>
