@@ -1,16 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-
-type Product = {
-  id: number;
-  name: string;
-  category: 'plants' | 'furniture';
-  price: number;
-  description: string;
-  quantity:number;
-  image: string;
-};
+import { Product } from './App';
 
 type ProductDetailsProps = {
   products: Product[];

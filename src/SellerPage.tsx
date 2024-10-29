@@ -4,25 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-
-type Product = {
-  id: number;
-  name: string;
-  category: 'plants' | 'furniture';
-  price: number;
-  description: string;
-  quantity: number;
-  image: string; // Add image field
-};
+import { Product } from './App';
 
 type SellerPageProps = {
+  sellerId: number;
   products: Product[];
   addProduct: (product: Product) => void;
   category: string;
   setCategory: (category: 'all' | 'plants' | 'furniture') => void;
 };
 
-const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category, setCategory }) => {
+const SellerPage: React.FC<SellerPageProps> = ({ sellerId, products, addProduct, category, setCategory }) => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [productCategory, setProductCategory] = useState<'plants' | 'furniture'>('plants');
@@ -49,6 +41,7 @@ const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category,
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const newProduct: Product = {
+      sellerId: sellerId,
       id: Date.now(),
       name,
       category: productCategory,

@@ -2,15 +2,8 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Product } from './App';
 
-type Product = {
-  id: number;
-  name: string;
-  category: 'plants' | 'furniture';
-  price: number;
-  description: string;
-  quantity: number;
-};
 
 type SellProductProps = {
   addProduct: (product: Product) => void;
@@ -22,6 +15,7 @@ const SellProduct: React.FC<SellProductProps> = ({ addProduct }) => {
   const [price, setPrice] = useState(0);
   const [description, setDescription] = useState('');
   const [quantity, setQuantity] = useState(0);
+  //need to set image
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

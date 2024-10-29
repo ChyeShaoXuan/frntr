@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -9,8 +9,10 @@ import { Link } from 'react-router-dom';
 import ProductDetails from './ProductDetails';
 import SellerPage from './SellerPage'; // Import the SellerPage component
 
+
 // Types
-type Product = {
+export type Product = {
+  sellerId: number;
   id: number;
   name: string;
   category: 'plants' | 'furniture';
@@ -24,11 +26,29 @@ type CartItem = Product & { quantity: number };
 
 // Mock data
 const initialProducts: Product[] = [
-  { id: 1, name: "Monstera Deliciosa", category: "plants", price: 30, description: "Beautiful tropical plant", quantity: 10, image: 'https://images.unsplash.com/photo-1545241047-6083a3684587?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fHBsYW50fGVufDB8fDB8fHwy' },
-  { id: 2, name: "Leather Sofa", category: "furniture", price: 999, description: "Comfortable 3-seater sofa", quantity: 10 , image: 'https://images.unsplash.com/photo-1512212621149-107ffe572d2f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8c29mYXxlbnwwfHwwfHx8Mg%3D%3D'},
-  { id: 3, name: "Snake Plant", category: "plants", price: 25, description: "Low-maintenance indoor plant", quantity: 10 , image: 'https://images.unsplash.com/photo-1483794344563-d27a8d18014e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGxhbnR8ZW58MHx8MHx8fDI%3D'},
-  { id: 4, name: "Wooden Dining Table", category: "furniture", price: 450, description: "Solid oak dining table", quantity: 10 , image: 'https://images.unsplash.com/photo-1505409628601-edc9af17fda6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZGluaW5nJTIwdGFibGV8ZW58MHx8MHx8fDI%3D'},
+  { sellerId:5, id: 1, name: "Monstera Deliciosa", category: "plants", price: 30, description: "Beautiful tropical plant", quantity: 10, image: 'https://images.unsplash.com/photo-1545241047-6083a3684587?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fHBsYW50fGVufDB8fDB8fHwy' },
+  { sellerId:5, id: 2, name: "Leather Sofa", category: "furniture", price: 999, description: "Comfortable 3-seater sofa", quantity: 10 , image: 'https://images.unsplash.com/photo-1512212621149-107ffe572d2f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8c29mYXxlbnwwfHwwfHx8Mg%3D%3D'},
+  { sellerId:5, id: 3, name: "Snake Plant", category: "plants", price: 25, description: "Low-maintenance indoor plant", quantity: 10 , image: 'https://images.unsplash.com/photo-1483794344563-d27a8d18014e?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cGxhbnR8ZW58MHx8MHx8fDI%3D'},
+  { sellerId:5, id: 4, name: "Wooden Dining Table", category: "furniture", price: 450, description: "Solid oak dining table", quantity: 10 , image: 'https://images.unsplash.com/photo-1505409628601-edc9af17fda6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZGluaW5nJTIwdGFibGV8ZW58MHx8MHx8fDI%3D'},
 ];
+
+const testSellerId = 5;
+
+// Define a type for the fetched item structure
+type FetchedItem = [
+  number,  // sellerId 
+  string,  // productName
+  number,  // productId
+  number,  // price
+  number,  // quantity
+  string,  // description
+  string   // category
+];
+
+//need api for seller id items? can just filter allitems by seller id?
+function filterItemsBySellerId(products: Product[], sellerId: number): Product[] {
+  return products.filter(product => product.sellerId === sellerId);
+}
 
 // Navbar component
 function Navbar({ cartItemsCount }: { cartItemsCount: number }) {
@@ -140,9 +160,42 @@ function Checkout() {
 }
 
 export default function App() {
-  const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [category, setCategory] = useState<'all' | 'plants' | 'furniture'>('all');
+  const [itemAddedStatus, setItemAddedStatus] = useState<boolean>(false);
+
+  // Fetch data and merge with initial products
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://mocki.io/v1/23e2d86f-ebcd-4534-8084-b8f840fbca89');  //https://localhost:5000/GetAllItems
+        const data = await response.json();
+
+        // Transform fetched data to match Product type
+        const newProducts: Product[] = data.items.map((item: FetchedItem) => ({
+          sellerId: item[0],
+          id: item[2], // Ensure this ID is unique (Product ID)
+          name: item[1],
+          category: item[6] as 'plants' | 'furniture', // Type assertion
+          price: item[3],
+          description: item[5],
+          quantity: item[4],
+          image: 'https://via.placeholder.com/150' // Use a default image or replace with actual image URLs if available
+        }));
+
+        // Combine initial products with new products
+        const combinedProducts: Product[] = [...initialProducts, ...newProducts]; //can edit to remove mock data
+
+        setProducts(combinedProducts);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+
+    fetchData();
+    console.log("a")
+  }, [itemAddedStatus]); // should re fetch when item added from seller
 
   const addToCart = (product: Product) => {
     setCart(prevCart => {
@@ -160,8 +213,41 @@ export default function App() {
     setCart(prevCart => prevCart.filter(item => item.id !== productId));
   };
 
-  const addProduct = (product: Product) => {
-    setProducts(prevProducts => [...prevProducts, product]);
+  const addProduct = async (product: Product) => {
+    // FOR NO DB will add to intial list if useEffect for intial fetch dependcy is [], setProducts(prevProducts => [...prevProducts, product]);
+    // POST to db
+    let toSend = {
+      "Seller_ID": product.sellerId,
+      "'Item_ID'": product.id,
+      "Item_Name": product.name,
+      "Item_Price": product.price,
+      "Item_Qty": product.quantity,
+      "Item_Desc": product.description,
+      "Category": product.category,
+      // how to store image?
+    }
+    try {
+      const response = await fetch('http://localhost:5000/addItems', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(toSend),
+      });
+
+      if (response.ok) {
+          const jsonResponse = await response.json();
+          console.log('Success:', jsonResponse);
+          setItemAddedStatus((prevStatus) => !prevStatus); //retriggers useEffect, effectively updating the page to show new list of products
+
+      } else {
+          console.error('Error:', response.statusText);
+      }
+    } catch (error) {
+        console.error('Error:', error);
+    }
+
+
   };
 
   const checkout = () => {
@@ -177,7 +263,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/shop" />} /> {/* Redirect to shop */}
             <Route path="/shop" element={<Shop products={products} addToCart={addToCart} category={category} setCategory={setCategory} />} />
-            <Route path="/seller" element={<SellerPage products={products} addProduct={addProduct} category={category} setCategory={setCategory} />} />
+            <Route path="/seller" element={<SellerPage products={filterItemsBySellerId(products, testSellerId)} sellerId={testSellerId} addProduct={addProduct} category={category} setCategory={setCategory} />} />
             <Route path="/cart" element={<Cart cart={cart} removeFromCart={removeFromCart} checkout={checkout} />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/product/:productId" element={<ProductDetails products={products} addToCart={addToCart} />} />
