@@ -39,11 +39,21 @@ def get_all_items():
 def retrieve_highest_itemID(seller_id):
     connection = get_db_connection()  
     try:
-        cursor = connection.cursor()
-   
-        cursor.execute('SELECT MAX(Item_ID) where Seller_ID = %s' , (seller_id))
-        result=cursor.fetchone()
-        return result[0] if result else (seller_id*1000) 
+        with connection.cursor() as cursor:
+
+            cursor.execute('SELECT Seller_ID from Items_Catalogue')
+            seller_list = [row[0] for row in cursor.fetchall()]
+            print(seller_list)
+            connection.commit
+
+            for i in seller_list:
+                if i == seller_id:
+                    cursor.execute('SELECT MAX(Item_ID) from Items_Catalogue where Seller_ID = %s' , (seller_id))
+                    result=cursor.fetchone()
+                    connection.commit()
+                    print(result[0])
+                    return result[0]
+            return (int(seller_id)*1000)
     finally:
         connection.close()
 
@@ -52,7 +62,9 @@ def add_items():
     connection = get_db_connection()  
     data = request.json
     seller_id = data['Seller_ID']
+    #print(seller_id)
     highest_ID= retrieve_highest_itemID(seller_id)
+    print(highest_ID)
     current_ID = int(highest_ID) + 1
     try:
         cursor = connection.cursor()
