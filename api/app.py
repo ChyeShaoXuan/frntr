@@ -36,18 +36,31 @@ def get_all_items():
     finally:
         connection.close()
 
+def retrieve_highest_itemID(seller_id):
+    connection = get_db_connection()  
+    try:
+        cursor = connection.cursor()
+   
+        cursor.execute('SELECT MAX(Item_ID) where Seller_ID = %s' , (seller_id))
+        result=cursor.fetchone()
+        return result[0] if result else (seller_id*1000) 
+    finally:
+        connection.close()
 
 @app.route('/addItems', methods=['POST'])
 def add_items():
     connection = get_db_connection()  
+    data = request.json
+    seller_id = data['Seller_ID']
+    highest_ID= retrieve_highest_itemID(seller_id)
+    current_ID = int(highest_ID) + 1
     try:
         cursor = connection.cursor()
-        data = request.json
    
         cursor.execute('''
             INSERT INTO Items_Catalogue (Seller_ID, Item_ID, Item_Name, Item_Price, Item_Qty, Item_Desc, Category)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
-        ''', (data['Seller_ID'], data['Item_ID'], data['Item_Name'], data['Item_Price'], data['Item_Qty'], data['Item_Desc'], data['Category']))
+        ''', (data['Seller_ID'], current_ID , data['Item_Name'], data['Item_Price'], data['Item_Qty'], data['Item_Desc'], data['Category']))
         
         connection.commit()
         return {'status': 'Item added successfully'}
