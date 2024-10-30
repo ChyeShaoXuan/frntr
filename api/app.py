@@ -115,4 +115,4 @@ def update_item_qty(seller_id, item_id, new_qty):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
