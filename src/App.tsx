@@ -169,7 +169,7 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://mocki.io/v1/23e2d86f-ebcd-4534-8084-b8f840fbca89');  //https://localhost:5000/GetAllItems
+        const response = await fetch('http://47.128.228.57:5000/GetAllItems');  //https://localhost:5000/GetAllItems
         const data = await response.json();
 
         // Transform fetched data to match Product type
@@ -218,7 +218,7 @@ export default function App() {
     // POST to db
     let toSend = {
       "Seller_ID": product.sellerId,
-      "'Item_ID'": product.id,
+      "Item_ID": product.id,
       "Item_Name": product.name,
       "Item_Price": product.price,
       "Item_Qty": product.quantity,
@@ -227,7 +227,7 @@ export default function App() {
       // how to store image?
     }
     try {
-      const response = await fetch('http://localhost:5000/addItems', {
+      const response = await fetch('http://47.128.228.57:5000/addItems', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
