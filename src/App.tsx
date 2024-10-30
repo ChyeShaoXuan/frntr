@@ -195,7 +195,7 @@ export default function App() {
 
     fetchData();
     console.log("a")
-  }, [itemAddedStatus]); // should re fetch when item added from seller
+  }, [itemAddedStatus,]); // should re fetch when item added from seller
 
   const addToCart = (product: Product) => {
     setCart(prevCart => {
@@ -250,10 +250,45 @@ export default function App() {
 
   };
 
-  const checkout = () => {
+  const checkout = async () => {
+    for (const item of cart) {
+      let newQuantity = 0;
+      let sellerId = 0;
+      const itemId = item.id; // Assuming each item has an id property
+      for (let i = 0; i < products.length; i++) {
+        if (products[i].id === itemId) {
+          newQuantity = products[i].quantity - item.quantity; // This would be the quantity you want to set
+          sellerId = products[i].sellerId;
+
+        }
+      }
+
+      try {
+        // Perform the API call to update the item quantity
+        const response = await fetch(`http://47.128.228.57:5000/updateItemQty/${sellerId}/${itemId}/${newQuantity}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        // Check if the response is OK
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+  
+        // Parse the response JSON
+        const result = await response.json();
+        console.log('Success:', result);
+      } catch (error) {
+        console.error('Error updating item quantity:', error);
+      }
+    }  
+    setItemAddedStatus((prevStatus) => !prevStatus); //retriggers useEffect, effectively updating the page to show new list of products
+
     alert(`Checkout completed! Total: $${cart.reduce((sum, item) => sum + item.price * item.quantity, 0)}`);
     setCart([]);
-  };
+};
 
   return (
     <Router>
