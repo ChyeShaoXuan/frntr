@@ -15,7 +15,7 @@ export type Product = {
   sellerId: number;
   id: number;
   name: string;
-  category: 'plants' | 'furniture';
+  category: 'plants' | 'furniture' | 'kitchen';
   price: number;
   description: string;
   quantity: number;
@@ -42,7 +42,8 @@ type FetchedItem = [
   number,  // price
   number,  // quantity
   string,  // description
-  string   // category
+  string,   // category
+  string    // image
 ];
 
 //need api for seller id items? can just filter allitems by seller id?
@@ -78,7 +79,7 @@ function Shop({ products, addToCart, category, setCategory }: {
   products: Product[];
   addToCart: (product: Product) => void;
   category: string;
-  setCategory: (category: 'all' | 'plants' | 'furniture') => void;
+  setCategory: (category: 'all' | 'plants' | 'furniture' ) => void;
 }) {
   const navigate = useNavigate();
   const filteredProducts = category === 'all' ? products : products.filter(p => p.category === category);
@@ -169,7 +170,7 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://18.136.120.185:5000/GetAllItems');  //https://localhost:5000/GetAllItems
+        const response = await fetch('http://18.136.120.185:5000/GetAllItems');  //https://localhost:5000/GetAllItems http://18.136.120.185:5000/GetAllItems
         const data = await response.json();
 
         // Transform fetched data to match Product type
@@ -181,7 +182,7 @@ export default function App() {
           price: item[3],
           description: item[5],
           quantity: item[4],
-          image: 'https://via.placeholder.com/150' // Use a default image or replace with actual image URLs if available
+          image: item[7] // Use a default image or replace with actual image URLs if available
         }));
 
         // Combine initial products with new products
@@ -224,6 +225,7 @@ export default function App() {
       "Item_Qty": product.quantity,
       "Item_Desc": product.description,
       "Category": product.category,
+      "Image_URl": product.image
       // how to store image?
     }
     try {
