@@ -68,6 +68,7 @@ function Navbar({ cartItemsCount }: { cartItemsCount: number }) {
               </span>
             )}
           </Link>
+          <Link to="/login" className="hover:text-gray-300">Logout</Link>
         </div>
       </div>
     </nav>
@@ -160,6 +161,24 @@ function Checkout() {
   );
 }
 
+// Login Page component (added directly in this file)
+function LoginPage() {
+  const handleLogin = () => {
+    // Redirect to Cognito's hosted UI login page
+    window.location.href = "https://frntr-cme.auth.ap-southeast-1.amazoncognito.com/login?client_id=gbgmbggo4fd72avaubjncoije&response_type=code&scope=email+openid&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fshop";
+  };
+
+  return (
+    <div className="container mx-auto p-4 max-w-md w-full flex flex-col items-center">
+      <h2 className="text-2xl font-semibold mb-4">Login</h2>
+      <button onClick={handleLogin} className="bg-blue-500 text-white px-6 py-2 rounded">
+        Go to Login Page
+      </button>
+    </div>
+  );
+}
+
+
 export default function App() {
   const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -170,7 +189,7 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://18.136.120.185:5000/GetAllItems');  //https://localhost:5000/GetAllItems http://18.136.120.185:5000/GetAllItems
+        const response = await fetch('http://app-load-balancer-internet-103124612.ap-southeast-1.elb.amazonaws.com/GetAllItems');  //https://localhost:5000/GetAllItems
         const data = await response.json();
 
         // Transform fetched data to match Product type
@@ -229,7 +248,7 @@ export default function App() {
       // how to store image?
     }
     try {
-      const response = await fetch('http://18.136.120.185:5000/addItems', {
+      const response = await fetch('http://app-load-balancer-internet-103124612.ap-southeast-1.elb.amazonaws.com/addItems', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -267,7 +286,7 @@ export default function App() {
 
       try {
         // Perform the API call to update the item quantity
-        const response = await fetch(`http://18.136.120.185:5000/updateItemQty/${sellerId}/${itemId}/${newQuantity}`, {
+        const response = await fetch(`http://app-load-balancer-internet-103124612.ap-southeast-1.elb.amazonaws.com/updateItemQty/${sellerId}/${itemId}/${newQuantity}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -298,12 +317,13 @@ export default function App() {
         <Navbar cartItemsCount={cart.reduce((sum, item) => sum + item.quantity, 0)} />
         <main className="flex-grow w-full">
           <Routes>
-            <Route path="/" element={<Navigate to="/shop" />} /> {/* Redirect to shop */}
+            <Route path="/" element={<Navigate to="/login" />} /> {/* Redirect to shop */}
             <Route path="/shop" element={<Shop products={products} addToCart={addToCart} category={category} setCategory={setCategory} />} />
             <Route path="/seller" element={<SellerPage products={filterItemsBySellerId(products, testSellerId)} sellerId={testSellerId} addProduct={addProduct} category={category} setCategory={setCategory} />} />
             <Route path="/cart" element={<Cart cart={cart} removeFromCart={removeFromCart} checkout={checkout} />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/product/:productId" element={<ProductDetails products={products} addToCart={addToCart} />} />
+            <Route path="/login" element={<LoginPage />} /> {/* Add Login route here */}
           </Routes>
         </main>
       </div>
