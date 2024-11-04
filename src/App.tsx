@@ -169,7 +169,7 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://47.128.228.57:5000/GetAllItems');  //https://localhost:5000/GetAllItems
+        const response = await fetch('http://18.136.120.185:5000/GetAllItems');  //https://localhost:5000/GetAllItems
         const data = await response.json();
 
         // Transform fetched data to match Product type
@@ -227,7 +227,7 @@ export default function App() {
       // how to store image?
     }
     try {
-      const response = await fetch('http://47.128.228.57:5000/addItems', {
+      const response = await fetch('http://18.136.120.185:5000/addItems', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -265,7 +265,7 @@ export default function App() {
 
       try {
         // Perform the API call to update the item quantity
-        const response = await fetch(`http://47.128.228.57:5000/updateItemQty/${sellerId}/${itemId}/${newQuantity}`, {
+        const response = await fetch(`http://18.136.120.185:5000/updateItemQty/${sellerId}/${itemId}/${newQuantity}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
