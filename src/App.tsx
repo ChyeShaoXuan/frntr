@@ -244,11 +244,11 @@ export default function App() {
       "Item_Qty": product.quantity,
       "Item_Desc": product.description,
       "Category": product.category,
-      "Image_URl": product.image
+      "Image_URL": product.image
       // how to store image?
     }
     try {
-      const response = await fetch('http://app-load-balancer-internet-103124612.ap-southeast-1.elb.amazonaws.com/addItems', {
+      const response = await fetch('http://app-load-balancer-internet-103124612.ap-southeast-1.elb.amazonaws.com/addItems', {  //http://app-load-balancer-internet-103124612.ap-southeast-1.elb.amazonaws.com/addItems
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',

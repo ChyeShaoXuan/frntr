@@ -4,17 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Product } from './App';
+import { Product } from './App'; // Import the Product type
 
 type SellerPageProps = {
-  sellerId: number;
   products: Product[];
+  sellerId: number;
   addProduct: (product: Product) => void;
   category: string;
   setCategory: (category: 'all' | 'plants' | 'furniture') => void;
 };
 
-const SellerPage: React.FC<SellerPageProps> = ({ sellerId, products, addProduct, category, setCategory }) => {
+const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category, setCategory }) => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [productCategory, setProductCategory] = useState<'plants' | 'furniture'>('plants');
@@ -22,6 +22,7 @@ const SellerPage: React.FC<SellerPageProps> = ({ sellerId, products, addProduct,
   const [description, setDescription] = useState('');
   const [quantity, setQuantity] = useState(0);
   const [image, setImage] = useState(''); // Add state for image
+  const [imageFile, setImageFile] = useState<File | null>(null); // Add state for image file
 
   const handleProductClick = (productId: number) => {
     navigate(`/product/${productId}`);
@@ -30,33 +31,73 @@ const SellerPage: React.FC<SellerPageProps> = ({ sellerId, products, addProduct,
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      setImageFile(file);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const uploadImageToImgur = async (file: File) => {
+    const clientId = 'cffd7fbd583e6bd'; // Replace with your Imgur client ID
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await fetch('https://api.imgur.com/3/image', {
+        method: 'POST',
+        headers: {
+          Authorization: `Client-ID ${clientId}`,
+        },
+        body: formData,
+      });
+      const data = await response.json();
+      return data.data.link;
+    } catch (error) {
+      console.error('Error uploading image to Imgur:', error);
+      return '';
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    let imageUrl = '';
+
+    if (imageFile) {
+      imageUrl = await uploadImageToImgur(imageFile);
+    }
+
     const newProduct: Product = {
-      sellerId: sellerId,
+      sellerId: 1, // Replace with the actual seller ID
       id: Date.now(),
       name,
       category: productCategory,
       price,
       description,
       quantity,
-      image, // Add image to product
+      image: imageUrl,
     };
-    addProduct(newProduct);
-    setName('');
-    setProductCategory('plants');
-    setPrice(0);
-    setDescription('');
-    setQuantity(0);
-    setImage(''); // Reset image state
+
+    try {
+      const response = await fetch('http://app-load-balancer-internet-103124612.ap-southeast-1.elb.amazonaws.com/addItems', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProduct),
+      });
+      if (response.ok) {
+        addProduct(newProduct);
+        setName('');
+        setProductCategory('plants');
+        setPrice(0);
+        setDescription('');
+        setQuantity(0);
+        setImage('');
+        setImageFile(null);
+      } else {
+        console.error('Error adding product:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error adding product:', error);
+    }
   };
 
   const filteredProducts = category === 'all' ? products : products.filter(p => p.category === category);
@@ -99,7 +140,7 @@ const SellerPage: React.FC<SellerPageProps> = ({ sellerId, products, addProduct,
       <h2 className="text-2xl font-semibold mb-4">Your Listed Products</h2>
       <div className="mb-4">
         <Label htmlFor="category-filter">Filter by Category</Label>
-        <Select value={category} onValueChange={(value: 'all' | 'plants' | 'furniture') => setCategory(value)}>
+        <Select value={category} onValueChange={(value: 'all' | 'plants' | 'furniture' ) => setCategory(value)}>
           <SelectTrigger className='select-trigger'>
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
