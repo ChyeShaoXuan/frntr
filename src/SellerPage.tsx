@@ -23,6 +23,7 @@ const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category,
   const [quantity, setQuantity] = useState(0);
   const [image, setImage] = useState(''); // Add state for image
   const [imageFile, setImageFile] = useState<File | null>(null); // Add state for image file
+  const [sellerId, setSellerID] = useState(6);
 
   const handleProductClick = (productId: number) => {
     navigate(`/product/${productId}`);
@@ -65,7 +66,7 @@ const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category,
     }
 
     const newProduct: Product = {
-      sellerId: 1, // Replace with the actual seller ID
+      sellerId: 6, // Replace with the actual seller ID
       id: Date.now(),
       name,
       category: productCategory,
@@ -76,25 +77,7 @@ const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category,
     };
 
     try {
-      const response = await fetch('http://app-load-balancer-internet-103124612.ap-southeast-1.elb.amazonaws.com/addItems', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newProduct),
-      });
-      if (response.ok) {
-        addProduct(newProduct);
-        setName('');
-        setProductCategory('plants');
-        setPrice(0);
-        setDescription('');
-        setQuantity(0);
-        setImage('');
-        setImageFile(null);
-      } else {
-        console.error('Error adding product:', response.statusText);
-      }
+      addProduct(newProduct)
     } catch (error) {
       console.error('Error adding product:', error);
     }
