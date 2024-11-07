@@ -58,7 +58,7 @@ function Navbar({ cartItemsCount }: { cartItemsCount: number }) {
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold">FRNTR</Link>
         <div className="flex items-center space-x-4">
-          <Link to="/" className="hover:text-gray-300">Shop</Link>
+          <Link to="/shop" className="hover:text-gray-300">Shop</Link>
           <Link to="/seller" className="hover:text-gray-300">Sell</Link>
           <Link to="/cart" className="hover:text-gray-300 relative">
             <ShoppingCart />
@@ -165,7 +165,7 @@ function Checkout() {
 function LoginPage() {
   const handleLogin = () => {
     // Redirect to Cognito's hosted UI login page
-    window.location.href = "https://frntr-cme.auth.ap-southeast-1.amazoncognito.com/login?client_id=gbgmbggo4fd72avaubjncoije&response_type=code&scope=email+openid&redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Fshop";
+    window.location.href = "https://frntr-cme.auth.ap-southeast-1.amazoncognito.com/login?client_id=gbgmbggo4fd72avaubjncoije&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fd2o7saukdjel5t.cloudfront.net%2Fshop";
   };
 
   return (
