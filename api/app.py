@@ -71,7 +71,7 @@ def add_items():
    
         cursor.execute('''
             INSERT INTO Items_Catalogue (Seller_ID, Item_ID, Item_Name, Item_Price, Item_Qty, Item_Desc, Category, Image_URL)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         ''', (data['Seller_ID'], current_ID , data['Item_Name'], data['Item_Price'], data['Item_Qty'], data['Item_Desc'], data['Category'],data['Image_URL']))
         
         connection.commit()
