@@ -66,7 +66,7 @@ const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category,
     }
 
     const newProduct: Product = {
-      sellerId: 6, // Replace with the actual seller ID
+      sellerId: 6,
       id: Date.now(),
       name,
       category: productCategory,
@@ -77,7 +77,8 @@ const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category,
     };
 
     try {
-      addProduct(newProduct)
+      await addProduct(newProduct);
+      navigate('/shop'); // Redirect after successful addition
     } catch (error) {
       console.error('Error adding product:', error);
     }
