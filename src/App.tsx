@@ -205,7 +205,7 @@ export default function App() {
         }));
 
         // Combine initial products with new products
-        const combinedProducts: Product[] = [...initialProducts, ...newProducts]; //can edit to remove mock data
+        const combinedProducts: Product[] = [ ...newProducts]; //can edit to remove mock data
 
         setProducts(combinedProducts);
       } catch (error) {
