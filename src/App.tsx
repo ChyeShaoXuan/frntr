@@ -165,7 +165,7 @@ function Checkout() {
 function LoginPage() {
   const handleLogin = () => {
     // Redirect to Cognito's hosted UI login page
-    window.location.href = "https://frntr-cme.auth.ap-southeast-1.amazoncognito.com/login?client_id=gbgmbggo4fd72avaubjncoije&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fd2o7saukdjel5t.cloudfront.net";
+    window.location.href = "https://frntr-cme.auth.ap-southeast-1.amazoncognito.com/login?client_id=gbgmbggo4fd72avaubjncoije&response_type=code&scope=email+openid&redirect_uri=https%3A%2F%2Fd2o7saukdjel5t.cloudfront.net%2Fshop";
   };
 
   return (
