@@ -120,7 +120,7 @@ const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category,
         <Button type="submit" className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md">List Product</Button>
       </form>
 
-      <h2 className="text-2xl font-semibold mb-4">Your Listed Products</h2>
+      {/* <h2 className="text-2xl font-semibold mb-4">Your Listed Products</h2>
       <div className="mb-4">
         <Label htmlFor="category-filter">Filter by Category</Label>
         <Select value={category} onValueChange={(value: 'all' | 'plants' | 'furniture' ) => setCategory(value)}>
@@ -145,7 +145,7 @@ const SellerPage: React.FC<SellerPageProps> = ({ products, addProduct, category,
             <p className="font-bold mt-2">Quantity: {product.quantity}</p>
           </div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };
