@@ -189,7 +189,7 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://App-Load-Balancer-Internet-103124612.ap-southeast-1.elb.amazonaws.com/GetAllItems');  //https://localhost:5000/GetAllItems
+        const response = await fetch('https://d2o7saukdjel5t.cloudfront.net/GetAllItems');  //https://localhost:5000/GetAllItems
         const data = await response.json();
 
         // Transform fetched data to match Product type
@@ -248,7 +248,7 @@ export default function App() {
       // how to store image?
     }
     try {
-      const response = await fetch('http://App-Load-Balancer-Internet-103124612.ap-southeast-1.elb.amazonaws.com/addItems', {  //http://App-Load-Balancer-Internet-103124612.ap-southeast-1.elb.amazonaws.com/addItems
+      const response = await fetch('https://d2o7saukdjel5t.cloudfront.net/addItems', {  //https://d2o7saukdjel5t.cloudfront.net/addItems
           method: 'POST',
           headers: {
               'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ export default function App() {
 
       try {
         // Perform the API call to update the item quantity
-        const response = await fetch(`http://App-Load-Balancer-Internet-103124612.ap-southeast-1.elb.amazonaws.com/updateItemQty/${sellerId}/${itemId}/${newQuantity}`, {
+        const response = await fetch(`https://d2o7saukdjel5t.cloudfront.net/updateItemQty/${sellerId}/${itemId}/${newQuantity}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
